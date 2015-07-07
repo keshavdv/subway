@@ -2,6 +2,7 @@ package main
 
 import (
 	"code.google.com/p/go.net/websocket"
+	"github.com/keshavdv/subway/msg"
 	"github.com/Sirupsen/logrus"
 	"github.com/hashicorp/yamux"
 	"io"
@@ -14,17 +15,32 @@ var log = logrus.New()
 func tunnel(sconn net.Conn) {
 	buff := make([]byte, 0xff)
 
-	// TOOD: read control message to figure out what port is being forwarded
+	// read control message to figure out what port is being forwarded
+	var req msg.TunnelRequest
+	if err := msg.ReadMsgInto(sconn, &req); err != nil {
+		log.Error(err.Error())
+	}
 
-	// TODO: bind to available local port to proxy
+	log.WithFields(logrus.Fields{
+		"client": sconn.RemoteAddr(),
+   	 	"proxy_port": req.Port,
+  	}).Info("received TunnelRequest")
+
+	// bind to available local port to proxy
 	local, _ := net.Listen("tcp", ":0")
 	defer local.Close()
 	log.Info(local.Addr())
 
-	// TODO: send url back in ack message
+	// send url back in ack message
+	res := &msg.TunnelReply{
+		URI:  "someurl",
+	}
+	if err := msg.WriteMsg(sconn, res); err != nil {
+		log.Error(err.Error())
+		return
+	}
 
 	// TODO: start proxying
-
 	for {
 		_, err := sconn.Read(buff)
 		if err != nil {
@@ -52,11 +68,11 @@ func handler(ws *websocket.Conn) {
 		if err != nil {
 			if session.IsClosed() {
 				// TODO: tunnel is no longer needed, close locally bound ports for this session
-				log.Printf("TCP closed")
+				log.Info("session closed")
 				break
 			}
-			// Print erros
-			log.Printf("Yamux accept: %s", err)
+			// Print errors
+			log.Error("yamux error: %s", err)
 			continue
 		}
 		go tunnel(stream)

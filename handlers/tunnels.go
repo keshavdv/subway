@@ -5,13 +5,16 @@ import (
 	"fmt"
 	"github.com/gorilla/context"
 	"github.com/hashicorp/yamux"
+	"github.com/keshavdv/subway/msg"
 	"github.com/unrolled/render"
 	"io"
-	"log"
+	"github.com/Sirupsen/logrus"
 	"net"
 	"net/http"
 	"strconv"
 )
+
+var log = logrus.New()
 
 func GetTunnels(w http.ResponseWriter, req *http.Request) {
 	// TODO
@@ -42,10 +45,16 @@ func DeleteTunnel(w http.ResponseWriter, req *http.Request) {
 func handleCreateTunnel(session *yamux.Session, port int) (url string, err error) {
 	// TODO: Attempt to bind to local port
 	addr := fmt.Sprintf("127.0.0.1:%v", port)
+	log.WithFields(logrus.Fields{
+		"server": addr,
+	}).Info("attempting to connect to server")
 	local, err := net.Dial("tcp", addr)
 	if err != nil {
 		return "", errors.New("Could not establish connection to host port.")
 	}
+	log.WithFields(logrus.Fields{
+		"server": addr,
+	}).Info("connected to server")
 
 	// Establish stream
 	stream, err := session.Open()
@@ -54,12 +63,35 @@ func handleCreateTunnel(session *yamux.Session, port int) (url string, err error
 	}
 
 	// TODO: send control message
+	log.WithFields(logrus.Fields{
+		"server": addr,
+	}).Info("sending TunnelRequest")
+	req := &msg.TunnelRequest{
+		Port:  port,
+	}
+	if err := msg.WriteMsg(stream, req); err != nil {
+		return "", err
+	}
 
 	// TODO: wait for ack w/ url
-	url = "tcp://somehost:8000"
+	log.WithFields(logrus.Fields{
+		"server": addr,
+	}).Info("waiting for TunnelReply")
+
+	var res msg.TunnelReply
+	if err := msg.ReadMsgInto(stream, &res); err != nil {
+		return "", err
+	}
+	log.WithFields(logrus.Fields{
+		"server": addr,
+		"port": port,
+		"uri": res.URI,
+	}).Info("received TunnelReply")
+	url = res.URI
 
 	// TODO: Update global state for later control messages
 
+	
 	// TODO: launch goroutine to proxy data
 	go proxy(stream, local)
 
@@ -70,11 +102,6 @@ func proxy(remote net.Conn, local net.Conn) {
 	defer remote.Close()
 	defer local.Close()
 
-	log.Println("test")
-	_, err := remote.Write([]byte("hello "))
-	if err != nil {
-		return
-	}
 	// TODO: proxy data in both directions
 	var waitFor chan struct{}
 
