@@ -1,0 +1,54 @@
+{
+	"ImportPath": "github.com/keshavdv/subway",
+	"GoVersion": "go1.4.2",
+	"Deps": [
+		{
+			"ImportPath": "code.google.com/p/go.net/websocket",
+			"Comment": "null-240",
+			"Rev": "937a34c9de13c766c814510f76bca091dee06028"
+		},
+		{
+			"ImportPath": "github.com/Sirupsen/logrus",
+			"Comment": "v0.8.2-23-gc79ccaf",
+			"Rev": "c79ccaf8c2b6e7361c430b45aae6891fca8ff729"
+		},
+		{
+			"ImportPath": "github.com/alecthomas/template",
+			"Rev": "b867cc6ab45cece8143cfcc6fc9c77cf3f2c23c0"
+		},
+		{
+			"ImportPath": "github.com/alecthomas/units",
+			"Rev": "6b4e7dc5e3143b85ea77909c72caf89416fc2915"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/negroni",
+			"Comment": "v0.1-70-gc7477ad",
+			"Rev": "c7477ad8e330bef55bf1ebe300cf8aa67c492d1b"
+		},
+		{
+			"ImportPath": "github.com/gorilla/context",
+			"Rev": "215affda49addc4c8ef7e2534915df2c8c35c6cd"
+		},
+		{
+			"ImportPath": "github.com/gorilla/mux",
+			"Rev": "9cb89f07ca03c6a28d1e237ba033bc6a29422fd6"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/yamux",
+			"Rev": "b2e55852ddaf823a85c67f798080eb7d08acd71d"
+		},
+		{
+			"ImportPath": "github.com/meatballhat/negroni-logrus",
+			"Rev": "eed9b3e979c39c3cd0a639b6c3a58d604f262b96"
+		},
+		{
+			"ImportPath": "github.com/unrolled/render",
+			"Rev": "d4edd394101358a4f8e462c43f884d9af99a4d30"
+		},
+		{
+			"ImportPath": "gopkg.in/alecthomas/kingpin.v2",
+			"Comment": "v2.0.10",
+			"Rev": "e1f37920c1d0ced4d1c92f9526a2a433183f02e9"
+		}
+	]
+}
