@@ -2,6 +2,15 @@
 
 This is a tunnelling application that is heavily based on [ngrok](https://github.com/inconshreveable/ngrok) that tunnels data over a WebSocket instead of standard TCP ports
 
+### Building
+
+To build the server and client binaries:
+
+    make server
+    make client
+
+The binaries can be found in the bin/ directory.
+
 ### Protocol
 
 ##### Establishing tunnels:
