@@ -1,0 +1,8 @@
+*.swp
+bin/
+pkg/
+src/code.google.com
+src/github.com
+src/gopkg.in
+.DS_Store
+.idea/
